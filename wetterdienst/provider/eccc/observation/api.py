@@ -323,10 +323,12 @@ class EcccObservationRequest(ScalarRequestCore):
 
     def _all(self) -> pd.DataFrame:
         # Acquire raw CSV payload.
-        csv_payload = self._download_stations()
+        csv_payload, source = self._download_stations()
+
+        header = source == 0 and 3 or 2
 
         # Read into Pandas data frame.
-        df = pd.read_csv(BytesIO(csv_payload), header=3, dtype=str)
+        df = pd.read_csv(BytesIO(csv_payload), header=header, dtype=str)
 
         df = df.rename(columns=str.lower)
 
@@ -339,7 +341,7 @@ class EcccObservationRequest(ScalarRequestCore):
         return df
 
     @staticmethod
-    def _download_stations() -> BytesIO:
+    def _download_stations() -> Tuple[BytesIO, int]:
         """
         Download station list from ECCC FTP server.
 
@@ -360,9 +362,10 @@ class EcccObservationRequest(ScalarRequestCore):
             cache_storage=cache_dir,
             expiry_time=CacheExpiry.METAINDEX.value,
         )
-
+        source = None
         try:
             payload = fs.cat(gdrive_url)
+            source = 0
         except Exception:
             log.exception(f"Unable to access Google drive server at {gdrive_url}")
 
@@ -371,10 +374,11 @@ class EcccObservationRequest(ScalarRequestCore):
                 response = fs.cat(http_url)
                 with gzip.open(BytesIO(response), mode="rb") as f:
                     payload = f.read()
+                source = 1
             except Exception:
                 log.exception(f"Unable to access HTTP server at {http_url}")
 
         if payload is None:
             raise FailedDownload("Unable to acquire ECCC stations_result list")
 
-        return payload
+        return payload, source

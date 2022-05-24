@@ -27,6 +27,8 @@ from wetterdienst import Settings, Wetterdienst
         ("wsv", "pegel", {"parameter": "water_level"}),
         # EA Hydrology
         ("ea", "hydrology", {"parameter": "flow", "resolution": "daily"}),
+        # Eaufrance Hubeau
+        ("eaufrance", "hubeau", {"parameter": "flow"}),
     ],
 )
 @pytest.mark.parametrize("si_units", (False, True))

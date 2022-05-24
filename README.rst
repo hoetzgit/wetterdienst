@@ -129,6 +129,11 @@ EA (Environment Agency)
         - data of river network of UK
         - parameters flow and ground water stage
 
+Eaufrance
+    - Hubeau
+        - data of river network of France (continental)
+        - parameters flow and stage of rivers of last 30 days
+
 To get better insight on which data we have currently made available and under which
 license those are published take a look at the data_ section.
 

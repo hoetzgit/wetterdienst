@@ -46,5 +46,12 @@ class Provider(Enum):
         "Environment Agency",
         "United Kingdom",
         "© Environment Agency of UK",
-        "https://environment.data.gov.uk/hydrology/",
+        "https://environment.data.gov.uk/",
+    )
+    EAUFRANCE = (
+        "Eaufrance",
+        "Eaufrance",
+        "France",
+        "© Eaufrance",
+        "https://www.eaufrance.fr/",
     )
