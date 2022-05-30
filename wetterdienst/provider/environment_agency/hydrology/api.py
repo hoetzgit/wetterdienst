@@ -8,7 +8,6 @@ from enum import Enum
 from typing import List, Optional, Tuple, Union
 
 import pandas as pd
-from numpy.distutils.misc_util import as_list
 
 from wetterdienst.core.scalar.request import ScalarRequestCore
 from wetterdienst.core.scalar.values import ScalarValuesCore
@@ -91,10 +90,12 @@ class EaHydrologyValues(ScalarValuesCore):
         endpoint = self._base_url.format(station_id=station_id)
         payload = download_file(endpoint, CacheExpiry.NO_CACHE)
 
-        measures_list = json.loads(payload.read())["items"]
-        measures_list = (
-            pd.Series(measures_list).map(lambda measure: measure["measures"]).map(lambda measure: as_list(measure)[0])
-        )
+        measures_list = json.loads(payload.read())["items"][0]["measures"]
+
+        if type(measures_list) == dict:
+            measures_list = [measures_list]
+
+        measures_list = pd.Series(measures_list)
 
         measures_list = measures_list[
             measures_list.map(
@@ -143,9 +144,7 @@ class EaHydrologyRequest(ScalarRequestCore):
 
     _resolution_base = EaHydrologyResolution
 
-    @property
-    def _resolution_type(self) -> ResolutionType:
-        return ResolutionType.FIXED
+    _resolution_type = ResolutionType.MULTI
 
     @property
     def _period_type(self) -> PeriodType:

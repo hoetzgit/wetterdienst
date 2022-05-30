@@ -22,6 +22,10 @@ class HubeauResolution(Enum):
     DYNAMIC = Resolution.DYNAMIC.value
 
 
+class HubeauPeriod(Enum):
+    HISTORICAL = Period.HISTORICAL.value
+
+
 class HubeauParameter(DatasetTreeCore):
     class DYNAMIC(Enum):
         FLOW = "Q"
@@ -101,12 +105,11 @@ class HubeauRequest(ScalarRequestCore):
     _parameter_base = HubeauParameter
 
     _has_tidy_data = True
-
     _has_datasets = False
 
     _data_range = DataRange.FIXED
 
-    _period_base = None
+    _period_base = Period.HISTORICAL
 
     _resolution_type = ResolutionType.DYNAMIC
     _resolution_base = HubeauResolution
